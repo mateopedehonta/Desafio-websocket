@@ -1,12 +1,12 @@
+const socket = io.connect()
+
 const list = document.querySelector("#products")
 const btnProduct = document.querySelector("#btn-product")
 const title = document.querySelector("#title")
 const price = document.querySelector("#price")
 const url = document.querySelector("#url")
 
-const socket = io.connect()
-
-socket.on('product',product =>render(product))
+socket.on('product',product =>renderProduct(product))
 
 
 btnProduct.addEventListener('click', e=>{
@@ -21,7 +21,7 @@ btnProduct.addEventListener('click', e=>{
     // console.log( title.value, price.value, url.value )
 })
 
-const render = (data)=>{
+const renderProduct = (data)=>{
     limpiarHTML(list)
     data.forEach(data => {
         const { title , price , url } = data
@@ -38,11 +38,52 @@ const render = (data)=>{
     
 }
 
-const chat = document.querySelector("#chat")
+const message = document.querySelector("#message")
+const divChat = document.querySelector("#chat")
 const email = document.querySelector("#email")
 const btnChat = document.querySelector("#btn-chat")
 
+//Fecha
+const tiempoTranscurrido = Date.now()
+const hoy = new Date(tiempoTranscurrido)
+const fecha= hoy.toLocaleDateString()
+const tiempo = new Date()
+const argHora=tiempo.toLocaleTimeString('it-IT')
 
+
+socket.on('chat',chat =>renderChat(chat))
+
+btnChat.addEventListener('click', e=>{
+    e.preventDefault()
+    const newMessage = {
+        message:message.value,
+        email:email.value
+    }
+    console.log(newMessage)
+    socket.emit('new-message',newMessage)
+    return false
+    // console.log( title.value, price.value, url.value )
+})
+
+const renderChat = chat=>{
+    limpiarHTML(divChat)
+    chat.forEach(newMessage => {
+        const { email , message } = newMessage
+        const messageDiv = document.createElement('div')
+        messageDiv.innerHTML = `
+            <div>
+                <strong style="color: blue;" >${email}</strong>[
+                <span style="color: brown;">${fecha}, ${argHora}</span>]:
+                <em style="color: green;font-style: italic;">${message}</em>
+            </div>
+        `
+
+            // `<p>${email}: ${message}</p>`
+        
+        divChat.appendChild(messageDiv)
+    });
+    
+}
 
 const limpiarHTML=(element)=> {
     while(element.firstChild) {

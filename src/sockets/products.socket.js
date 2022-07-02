@@ -30,7 +30,7 @@ const socketsEventsProduct = io =>{
                 url,
                 id: i++
             })
-            io.socket.emit('product',products)
+            io.sockets.emit('product',products)
         })
     })
 }
