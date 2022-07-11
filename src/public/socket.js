@@ -8,7 +8,6 @@ const url = document.querySelector("#url")
 
 socket.on('product',product =>renderProduct(product))
 
-
 btnProduct.addEventListener('click', e=>{
     e.preventDefault()
     const newProduct = {
@@ -18,7 +17,6 @@ btnProduct.addEventListener('click', e=>{
     }
     socket.emit('new-product',newProduct)
     return false
-    // console.log( title.value, price.value, url.value )
 })
 
 const renderProduct = (data)=>{
@@ -43,23 +41,24 @@ const divChat = document.querySelector("#chat")
 const email = document.querySelector("#email")
 const btnChat = document.querySelector("#btn-chat")
 
-//Fecha
-const tiempoTranscurrido = Date.now()
-const hoy = new Date(tiempoTranscurrido)
-const fecha= hoy.toLocaleDateString()
-const tiempo = new Date()
-const argHora=tiempo.toLocaleTimeString('it-IT')
-
-
+// Fecha
+// const tiempoTranscurrido = Date.now()
+// const hoy = new Date(tiempoTranscurrido)
+// const fecha= hoy.toLocaleDateString()
+// const tiempo = new Date()
+// const argHora=tiempo.toLocaleTimeString('it-IT')
+const newfecha = new Date().toISOString()
+// console.log(fecha)
 socket.on('chat',chat =>renderChat(chat))
 
 btnChat.addEventListener('click', e=>{
     e.preventDefault()
     const newMessage = {
         message:message.value,
-        email:email.value
+        email:email.value,
+        fecha: new Date().toISOString()
     }
-    console.log(newMessage)
+    // console.log(newMessage)
     socket.emit('new-message',newMessage)
     return false
     // console.log( title.value, price.value, url.value )
@@ -68,18 +67,15 @@ btnChat.addEventListener('click', e=>{
 const renderChat = chat=>{
     limpiarHTML(divChat)
     chat.forEach(newMessage => {
-        const { email , message } = newMessage
+        const { email , message ,fecha } = newMessage
         const messageDiv = document.createElement('div')
         messageDiv.innerHTML = `
             <div>
                 <strong style="color: blue;" >${email}</strong>[
-                <span style="color: brown;">${fecha}, ${argHora}</span>]:
+                <span style="color: brown;">${fecha}</span>]:
                 <em style="color: green;font-style: italic;">${message}</em>
             </div>
         `
-
-            // `<p>${email}: ${message}</p>`
-        
         divChat.appendChild(messageDiv)
     });
     

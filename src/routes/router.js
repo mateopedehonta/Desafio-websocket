@@ -1,9 +1,6 @@
 const { Router } = require('express')
 const router = Router()
-const {addProducts,client} = require('../controllers/Controllers')
-
-
-router.post('/productos',addProducts)
+const {client} = require('../controllers/Controllers')
 
 router.get("/",client)
 

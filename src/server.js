@@ -6,7 +6,7 @@ const router = require('./routes/router')
 const path = require('path')
 const socketEventProduct = require("./sockets/products.socket")
 const socketEventChat = require("./sockets/chat.socket")
-
+const {engine} = require('express-handlebars')
 
 //INITIALIZATIONS
 const app = express()
@@ -14,13 +14,20 @@ const httpServer = new HttpServer(app)
 const io = new IOserver(httpServer)
 
 //SETTINGS
-app.set("view engine",'ejs')
+app.engine("hbs",engine({
+    extname:".hbs",
+    defaultLayout: path.join(__dirname,"./views/layouts/main.hbs"),
+    layoutsDir:  path.join(__dirname,"./views/layouts"),
+    partialsDir: path.join(__dirname,"./views/partials")
+}))
+
+
+app.set("view engine",'hbs')
 app.set("views", path.join(__dirname,"./views"))
 app.set('port', process.env.PORT || 8080);
 const PORT = app.get('port')
 
 //STATIC FILES
-// app.use(express.static(path.join(__dirname,"/client")))
 app.use('/static', express.static(__dirname + '/public'));
 
 //MIDDLEWARES
